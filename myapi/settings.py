@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8v@9g4p93%mv_98b_qb-#lahb63)8k2ik4mzwu)5gu3tlftgs@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
 
 # Build ALLOWED_HOSTS from environment for flexible deployments (Render, Railway, etc.).
 # Accept a comma-separated ALLOWED_HOSTS env var. If a scheme (http:// or https://) is
@@ -40,8 +40,10 @@ def _normalize_host(h: str) -> str:
 
 raw_hosts = os.environ.get('ALLOWED_HOSTS')
 if raw_hosts:
+    DEBUG = False
     ALLOWED_HOSTS = [nh for nh in (_normalize_host(x) for x in raw_hosts.split(',')) if nh]
 else:
+    DEBUG = True
     # sensible defaults for local development and test client
     ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 # Application definition
