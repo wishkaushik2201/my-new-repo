@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-8v@9g4p93%mv_98b_qb-#lahb63)8k2ik4mzwu)5gu3tlftgs@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver', "https://my-new-repo-bhf7.onrender.com"]
 
 
 # Application definition
@@ -167,5 +167,4 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",   # React dev server
 ]
 
-CORS_ALLOW_CREDENTIALS = True
 
