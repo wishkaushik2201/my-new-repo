@@ -25,7 +25,25 @@ SECRET_KEY = 'django-insecure-8v@9g4p93%mv_98b_qb-#lahb63)8k2ik4mzwu)5gu3tlftgs@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver', "https://my-new-repo-bhf7.onrender.com"]
+# Build ALLOWED_HOSTS from environment for flexible deployments (Render, Railway, etc.).
+# Accept a comma-separated ALLOWED_HOSTS env var. If a scheme (http:// or https://) is
+# provided, strip it so Django receives only the hostname.
+def _normalize_host(h: str) -> str:
+    h = h.strip()
+    if not h:
+        return ''
+    # strip scheme if present
+    if h.startswith('http://') or h.startswith('https://'):
+        h = h.split('://', 1)[1]
+    # strip any path
+    return h.split('/', 1)[0]
+
+raw_hosts = os.environ.get('ALLOWED_HOSTS')
+if raw_hosts:
+    ALLOWED_HOSTS = [nh for nh in (_normalize_host(x) for x in raw_hosts.split(',')) if nh]
+else:
+    # sensible defaults for local development and test client
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 # Application definition
 
 INSTALLED_APPS = [
