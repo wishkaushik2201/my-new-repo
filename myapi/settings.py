@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
-from  dotenv import load_dotenv 
 import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,7 +80,6 @@ WSGI_APPLICATION = 'myapi.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-load_dotenv()
 
 GITHUB_CI = os.environ.get("GITHUB_ACTIONS") == "true"
 LOCAL_ENV = os.environ.get("DJANGO_ENV") == "local"
