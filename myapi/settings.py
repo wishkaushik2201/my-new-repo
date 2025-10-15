@@ -102,7 +102,6 @@ WSGI_APPLICATION = 'myapi.wsgi.application'
 GITHUB_CI = os.environ.get("GITHUB_ACTIONS") == "true"
 LOCAL_ENV = os.environ.get("DJANGO_ENV") == "local"
 DATABASE_URL = os.environ.get("DATABASE_URL")
-print(DATABASE_URL)
 # Default: SQLite (safe fallback)
 DATABASES = {
     'default': {
@@ -181,8 +180,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # AUTH_USER_MODEL = "api.User"
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",   # React dev server
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",   # React dev server
+# ]
+CORS_ALLOW_ALL_ORIGINS = True
 
 
