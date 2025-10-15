@@ -11,18 +11,26 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
-        image: mysql:8
+      postgres:
+        image: postgres:15
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_db
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
         ports:
-          - 3306:3306
+          - 5432:5432
         options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      # Django environment variables
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
+      DJANGO_SETTINGS_MODULE: myapi.settings
+      SECRET_KEY: test-secret
+      DEBUG: "1"
 
     steps:
       - uses: actions/checkout@v4
@@ -37,16 +45,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Wait for MySQL
+      - name: Wait for PostgreSQL
         run: |
+          echo "Waiting for PostgreSQL to be ready..."
           sleep 20
 
       - name: Run migrations
-        env:
-          DATABASE_URL: mysql://root:root@localhost:3306/test_db
         run: python manage.py migrate
 
       - name: Run tests
-        env:
-          DATABASE_URL: mysql://root:root@localhost:3306/test_db
         run: python manage.py test --noinput
