@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'myapi.wsgi.application'
 GITHUB_CI = os.environ.get("GITHUB_ACTIONS") == "true"
 LOCAL_ENV = os.environ.get("DJANGO_ENV") == "local"
 DATABASE_URL = os.environ.get("DATABASE_URL")
-
+print(DATABASE_URL)
 # Default: SQLite (safe fallback)
 DATABASES = {
     'default': {
@@ -92,32 +92,34 @@ DATABASES = {
         'NAME': BASE_DIR / "db.sqlite3",
     }
 }
-
+try:
 # 1️⃣ If DATABASE_URL exists (e.g., Render or Railway)
-if DATABASE_URL:
-    DATABASES['default'] = dj_database_url.parse(
-        DATABASE_URL,
-        conn_max_age=600,   # Keeps DB connection open for performance
-        ssl_require=True    # Required for most cloud DBs
-    )
+    if DATABASE_URL:
+        DATABASES['default'] = dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,   # Keeps DB connection open for performance
+            ssl_require=True    # Required for most cloud DBs
+        )
 
-# 2️⃣ Local environment (PostgreSQL on localhost)
-elif LOCAL_ENV:
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_DB', 'my_local_db'),
-        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password'),
-        'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
-        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
-    }
+    # 2️⃣ Local environment (PostgreSQL on localhost)
+    elif LOCAL_ENV:
+        DATABASES['default'] = {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('POSTGRES_DB', 'my_local_db'),
+            'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+            'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password'),
+            'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
+            'PORT': os.environ.get('POSTGRES_PORT', '5432'),
+        }
 
-# 3️⃣ GitHub Actions (use SQLite)
-elif GITHUB_CI:
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / "test_db.sqlite3",
-    }
+    # 3️⃣ GitHub Actions (use SQLite)
+    elif GITHUB_CI:
+        DATABASES['default'] = {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / "test_db.sqlite3",
+        }
+except Exception as e:
+    print("error in db connection", e)
 
 
 # Password validation
