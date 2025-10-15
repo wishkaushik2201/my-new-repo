@@ -10,24 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: test_db
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     env:
-      # Django environment variables
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
       DJANGO_SETTINGS_MODULE: myapi.settings
       SECRET_KEY: test-secret
       DEBUG: "1"
@@ -45,13 +28,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Wait for PostgreSQL
+      - name: Run migrations (SQLite)
         run: |
-          echo "Waiting for PostgreSQL to be ready..."
-          sleep 20
-
-      - name: Run migrations
-        run: python manage.py migrate
+          python manage.py migrate --noinput
 
       - name: Run tests
-        run: python manage.py test --noinput
+        run: |
+          python manage.py test --noinput
